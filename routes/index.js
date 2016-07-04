@@ -38,6 +38,8 @@ router.route('/users')
 		});
 });
 
+// Not really using this yet.
+// Modify if we want to allow creating of new channels etc
 router.route('/channels')
 	.get(function(req, res) {
 		res.json([{username:"u1"},{username:"u2"}]);
@@ -46,6 +48,8 @@ router.route('/channels')
 		res.json([{username:"u1"},{username:"u2"}]);
 	});
 
+// TODO: Decide on whether we want to call these things channels or rooms
+// Not using this yet in any of the clients
 router.route('/rooms')
 	.get(function(req, res) {
 		res.json([{username:"u1"},{username:"u2"}]);
@@ -54,6 +58,9 @@ router.route('/rooms')
 		res.json([{username:"u1"},{username:"u2"}]);
 	});
 
+// Atm all messages are created and received via the realtime api
+// (except for unread messages below)
+// Not using this in any of the clients
 router.route('/messages')
 	.get(function(req, res) {
 		res.json([{message:"m1"},{message:"m2"}]);
@@ -62,36 +69,19 @@ router.route('/messages')
 		res.json([{message:"m1"},{message:"m2"}]);
 	});
 
+// Get all messages received since the last time stamp
 router.route('/messages/unread')
 	.get(function(req, res) {
-		console.log('request for unread messages from: ' + req.get('User-Id'));
-		console.log(req.headers);
 		var lastMessageTimeStamp = req.query.lastMessageTimeStamp;
 		var userId = req.get('User-Id');
-		console.log(typeof(lastMessageTimeStamp))
-		console.log('last message recieved date: ' + lastMessageTimeStamp);
 		redisData.lrange("directMessages:" + userId, 0, -1, function(err, data) {
 		    if (err) return res.send(500, { error: err });
     		var newMessages = data.map((item) => JSON.parse(item));
-    		console.log('all messages ');
-    		console.log(newMessages);
     		if (newMessages.length > 0 && lastMessageTimeStamp) {
-    			console.log('test')
-    			console.log(lastMessageTimeStamp)
-    			console.log(newMessages[0].timestamp)
-    			console.log(newMessages[0].timestamp > lastMessageTimeStamp)
-    			console.log(newMessages[newMessages.length-1].timestamp)
-    			console.log(newMessages[newMessages.length-1].timestamp > lastMessageTimeStamp)
-    			console.log('test over')
-    			// TODO: pretty ineffecient
-    			console.log('filtering !')
     			if (lastMessageTimeStamp) {
-    				console.log('we got a timestamp!');
     				newMessages = newMessages.filter((item) => item.timestamp > lastMessageTimeStamp);
     			}
     		}
-    		console.log('filtered messages:');
-    		console.log(newMessages);
     		res.json(newMessages);
 		});
 	});
