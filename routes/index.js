@@ -70,21 +70,21 @@ router.route('/messages')
 	});
 
 // Get all messages received since the last time stamp
-router.route('/messages/unread')
-	.get(function(req, res) {
-		var lastMessageTimeStamp = req.query.lastMessageTimeStamp;
-		var userId = req.get('User-Id');
-		redisData.lrange("directMessages:" + userId, 0, -1, function(err, data) {
-		    if (err) return res.send(500, { error: err });
-    		var newMessages = data.map((item) => JSON.parse(item));
-    		if (newMessages.length > 0 && lastMessageTimeStamp) {
-    			if (lastMessageTimeStamp) {
-    				newMessages = newMessages.filter((item) => item.timestamp > lastMessageTimeStamp);
-    			}
-    		}
-    		res.json(newMessages);
-		});
-	});
+// router.route('/messages/unread')
+// 	.get(function(req, res) {
+// 		var lastMessageTimeStamp = req.query.lastMessageTimeStamp;
+// 		var userId = req.get('User-Id');
+// 		redisData.lrange("directMessages:" + userId, 0, -1, function(err, data) {
+// 		    if (err) return res.send(500, { error: err });
+//     		var newMessages = data.map((item) => JSON.parse(item));
+//     		if (newMessages.length > 0 && lastMessageTimeStamp) {
+//     			if (lastMessageTimeStamp) {
+//     				newMessages = newMessages.filter((item) => item.timestamp > lastMessageTimeStamp);
+//     			}
+//     		}
+//     		res.json(newMessages);
+// 		});
+// 	});
 
 module.exports = router;
 
