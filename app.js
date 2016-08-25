@@ -9,7 +9,7 @@ app.use(cors);
 app.use(bodyParser.json())
 app.use('/', router)
 
-var port = process.env.PORT || 8080;
+var port = process.env.PORT || 8081;
 
 app.listen(port, function(){
 	console.log('api listening on *:' + port);
