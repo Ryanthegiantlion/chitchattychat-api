@@ -5,7 +5,9 @@ var userSchema = new Schema({
 	userName: String,
 	userNameNormalised: String,
 	lastSync: Date,
-	lastActive: Date
+	lastActive: Date,
+	pushToken: String,
+	platform: String
 });
 
 module.exports = mongoose.model('User', userSchema);

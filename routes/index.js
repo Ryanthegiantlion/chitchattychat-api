@@ -29,8 +29,18 @@ router.route('/users')
 		});
 	})
 	.post(function(req, res){
+		console.log('getting user post')
+		console.log(req.body);
 		var query = {'userName':req.body.userName.toLowerCase()};
-		User.findOneAndUpdate(query, query, {new: true, upsert:true}, function(err, doc){
+		
+		var doc = {'userName':req.body.userName.toLowerCase()};
+		if (req.body.pushToken) {
+			doc.pushToken = req.body.pushToken;
+			doc.platform = req.body.platform;
+		}
+
+		console.log(doc)
+		User.findOneAndUpdate(query, doc, {new: true, upsert:true}, function(err, doc){
     	if (err) return res.send(500, { error: err });
     	
     	res.json(doc);
